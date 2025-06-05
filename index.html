@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>悅音齋自動木魚</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: "SimSun", serif;
+      background: url("sanqing.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: #3b1f0f;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.6);
+      z-index: -1;
+    }
+
+    .plaque {
+      background: linear-gradient(to bottom, #59320e, #3e2005);
+      border: 6px solid #d4af37;
+      padding: 20px 40px;
+      text-align: center;
+      color: #ffd700;
+      font-size: 2rem;
+      letter-spacing: 8px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      width: fit-content;
+      margin: 30px auto 20px;
+      border-radius: 12px;
+      font-family: "SimSun", serif;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 36vh; /* 留出上半部祖師臉空間 */
+    }
+
+    #muyu {
+      width: 200px;
+      transition: transform 0.2s ease;
+      cursor: pointer;
+      margin-bottom: 30px;
+    }
+
+    #muyu.hit {
+      transform: scale(1.25);
+    }
+
+    .controls {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    button {
+      background: #6b3e26;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    input[type=number] {
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 80px;
+      font-size: 1rem;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    footer {
+      background: rgba(80, 40, 20, 0.9);
+      color: #f1e4c7;
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9rem;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+    }
+
+    footer a {
+      color: #ffd87d;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="plaque">悅音齋自動木魚</div>
+
+  <main>
+    <img id="muyu" src="muyu.png" alt="木魚" />
+    <audio id="muyuSound" src="muyu.mp3"></audio>
+
+    <div class="controls">
+      <button onclick="playMuyu()">敲一下</button>
+      <button onclick="toggleAuto()" id="autoBtn">啟動自動木魚</button>
+      <br/>
+      <label for="bpmInput">BPM（每分鐘敲幾下）</label>
+      <input type="number" id="bpmInput" value="60" min="30" max="600" />
+      <div id="message"></div>
+    </div>
+  </main>
+
+  <footer>
+    抖音 ID：<a href="https://www.douyin.com/user/orangeporrige214" target="_blank">@orangeporrige214</a>
+    ｜ <a href="https://github.com/Charles-0214/muyu" target="_blank">GitHub 開源</a><br>
+    本網站為免費開源項目，福生無量天尊。
+  </footer>
+
+  <script>
+    const muyu = document.getElementById('muyu');
+    const sound = document.getElementById('muyuSound');
+    const bpmInput = document.getElementById('bpmInput');
+    const message = document.getElementById('message');
+    const autoBtn = document.getElementById('autoBtn');
+
+    let autoTimer = null;
+
+    function playMuyu() {
+      sound.currentTime = 0;
+      sound.play();
+      muyu.classList.add('hit');
+      setTimeout(() => muyu.classList.remove('hit'), 100);
+    }
+
+    function toggleAuto() {
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+        message.textContent = '暫停自動木魚，福生無量天尊';
+        autoBtn.textContent = '啟動自動木魚';
+      } else {
+        const bpm = parseInt(bpmInput.value);
+        if (isNaN(bpm) || bpm < 30 || bpm > 600) {
+          alert("請輸入30~600之間的BPM");
+          return;
+        }
+        const interval = 60000 / bpm;
+        autoTimer = setInterval(playMuyu, interval);
+        message.textContent = '啟動自動木魚';
+        autoBtn.textContent = '暫停自動木魚';
+      }
+    }
+
+    muyu.addEventListener("click", playMuyu);
+  </script>
+</body>
+</html>
